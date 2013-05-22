@@ -1,0 +1,5 @@
+      [paste.app_factory]
+      main = longitudinal_register:main
+      [console_scripts]
+      initialize_longitudinal_register_db = longitudinal_register.scripts.initializedb:main
+      
