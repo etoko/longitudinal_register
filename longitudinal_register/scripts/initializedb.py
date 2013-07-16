@@ -11,8 +11,11 @@ from pyramid.paster import (
 
 from ..models import (
     DBSession,
+    Location,
+    LocationType,
     MyModel,
     Base,
+    User,
     )
 
 
@@ -32,6 +35,27 @@ def main(argv=sys.argv):
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
+    user = User("emmanuel.toko", "Emmanuel", "Toko")
+    user.password = "12345"
+    user.is_superuser = True
+
+    location_type_none = LocationType("None")
+    location_type_none.id = 10    
+
+    location_types = (LocationType("District"), LocationType("County"), \
+        LocationType("Sub County"), LocationType("Parish"), \
+        LocationType("Village"), location_type_none)
+
+    location = Location()
+    location.name = "None"
+    location.location_type = 10
+
     with transaction.manager:
         model = MyModel(name='one', value=1)
+        DBSession.add(user)
         DBSession.add(model)
+        DBSession.add_all(location_types)
+
+
+    with transaction.manager:
+        DBSession.add(location)

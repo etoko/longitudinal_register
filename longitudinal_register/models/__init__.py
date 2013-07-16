@@ -10,9 +10,9 @@ import cryptacular.bcrypt
 #  ConceptClass,
 #  ConceptDatatype,
 #  )
-#from longitudinal_register.models.encounters import (
-#  Encounter,
-#  EncounterType,
+#from longitudinal_register.models.visits import (
+#  Visit,
+#  VisitType,
 #  )
 #from longitudinal_register.models.locations import (
 #  Location,
@@ -28,6 +28,12 @@ import cryptacular.bcrypt
 #from longitudinal_register.models.users import (
 #  User,
 #  )
+
+from pyramid.security import (
+    Allow,
+    Authenticated,
+    Everyone,
+    )
 
 from sqlalchemy import (
   Column,
@@ -71,16 +77,16 @@ class BaseExtension(MapperExtension):
 
     def before_insert(self, mapper, connection, instance):
         instance.created_on = datetime.now()
+        created_by = 1
 
     def before_update(self, mapper, connection, instance):
         instance.updated_on = datetime.now()
+        modified_by = 1
 
 class BaseEntity(object):
     __mapper_args__ = {
     "extension": BaseExtension
     }
-
-
 
 class MyModel(Base):
     __tablename__ = 'models'
@@ -93,21 +99,36 @@ class MyModel(Base):
         self.value = value
 
 user_groups = Table(u"user_groups", Base.metadata,
-  Column(u"user_id", Integer, ForeignKey("users.id")),
-  Column(u"group_id", Integer, ForeignKey("groups.id"))
-  )
+    Column(u"user_id", Integer, ForeignKey("users.id")),
+    Column(u"group_id", Integer, ForeignKey("groups.id"))
+    )
 
 group_permissions = Table(u"group_permissions", Base.metadata,
-  Column(u"group_id", Integer, ForeignKey("groups.id")),
-  Column(u"permission_id", Integer, ForeignKey("permissions.id"))
-  )
+    Column(u"group_id", Integer, ForeignKey("groups.id")),
+    Column(u"permission_id", Integer, ForeignKey("permissions.id"))
+    )
+
+#visit_observations = Table(u"visit_observations", Base.metadata,
+#    Column(u"visit", Integer, ForeignKey("visits.id")),
+#    Column(u"observation", Integer, ForeignKey("observations.id"))
+#    )
 
 crypt = cryptacular.bcrypt.BCRYPTPasswordManager()
 
 def hash_password(password):
     return unicode(crypt.encode(password))
 
-class User(Base,BaseEntity):
+class RootFactory(object):
+    __acl__ = [
+        (Allow, Everyone, "view"),
+        (Allow, Authenticated, "post")
+    ]
+
+    def __init__(self, request):
+        pass
+
+
+class User(Base):
    
     __tablename__ = u"users"
     
@@ -254,13 +275,10 @@ class Location(Base):
 
     __tablename__ = "locations"
 
-    id = Column(u"id", Integer, Sequence("user_id_seq"), primary_key = True)
+    id = Column(u"id", Integer, Sequence("locations_id_seq"), primary_key = True)
     name = Column(u"name", String(50))
     parent = Column(ForeignKey("locations.id"), nullable = True)
-    l_type = Column(ForeignKey("location_types.id"), nullable =True)
-
-#    def __init__():
-        #TODO add initialisation 
+    location_type = Column(ForeignKey("location_types.id"), nullable =False)
 
 class LocationType(Base):
 
@@ -269,6 +287,9 @@ class LocationType(Base):
     id = Column(Integer, Sequence("location_type_id_seq"), primary_key = True)
     name = Column(String(50), nullable = False)
     notes = Column(Text, nullable = True)
+   
+    def __init__(self, name):
+        self.name = name
 
 class HealthUnit(Base):
 
@@ -277,25 +298,40 @@ class HealthUnit(Base):
     id = Column(Integer, Sequence("health_unit_seq_id"), primary_key = True)
     name = Column(String(100), nullable = False)
     notes = Column(Text, nullable = True, default = "")
+    gps = Column(String(70), nullable=True)
+    location = Column(ForeignKey("locations.id"), nullable=False)
+    health_unit_type = Column(ForeignKey("health_unit_type.id"))
 
-    def __init__():
-        name = None
+    #def __init__():
+   #     name = None
         #TODO add initialisation 
 
+class HealthUnitType(Base):
+
+    __tablename__ = "health_unit_type"
+
+    id = Column(u"id", Integer, Sequence("health_unit_type_id_seq"), primary_key = True)
+    name = Column(String(60), nullable = False)
+    notes = Column(Text, nullable = True)
 
 
-class Person(Base):
+class Person(Base, BaseExtension):
+    """
+    Represents a person entity which directly represents a Patient
+    """
 
     __tablename__ = "persons"
 
     id = Column(u"id", Integer, Sequence("person_id_seq"), primary_key=True)
+    health_id = Column(u'health_id', String(20), unique = True)
     surname = Column(u"surname", String(50), nullable = False)
     other_names = Column(u"other_names", String(100), nullable = False)
     gender = Column(u"gender", String(10), default = "FEMALE")
     #make date_of_birth optional for the mother
     dob = Column(u"dob", DateTime, server_default = text("now()")) 
-    dob_estimated = Column(u"dob_estimated", String(20))
+    dob_estimated = Column(Boolean, default=False)
     status = Column(u"status", String(20)) # Entry point on workbook
+    location = Column(Integer, ForeignKey("locations.id"))
     created_by = Column(u"created_by", ForeignKey("users.id"))
     created_on = Column(u"created_on", DateTime, server_default = text("now()"))
     modified_by = Column(u"modified_by", ForeignKey("users.id"))
@@ -400,16 +436,16 @@ class ConceptDatatype(Base):
 
  
 
-class Encounter(Base):
+class Visit(Base):
 
-    __tablename__ = "encounters"
+    __tablename__ = "visits"
 
-    id = Column(Integer, Sequence("encounter_id_seq"), primary_key = True)
-    e_type = Column(Integer, ForeignKey("encounter_types.id"))
+    id = Column(Integer, Sequence("visit_id_seq"), primary_key = True)
+    visit_type = Column(Integer, ForeignKey("visit_types.id"))
     patient = Column(Integer, ForeignKey("patients.id"), nullable = False)
     provider = Column(Integer, ForeignKey("users.id"))
     health_unit = Column(Integer, ForeignKey("health_units.id"))
-    e_date = Column(DateTime)
+    visit_date = Column(DateTime)
     created_by = Column(Integer, ForeignKey("users.id"))
     created_on = Column(DateTime, server_default = text("now()"))
     modified_by = Column(Integer, ForeignKey("users.id"))
@@ -417,11 +453,11 @@ class Encounter(Base):
     voided = Column(Boolean, default = False)
     observations = relationship("Observation", order_by="Observation.id")
 
-class EncounterType(Base):
+class VisitType(Base):
 
-    __tablename__ = "encounter_types"
+    __tablename__ = "visit_types"
 
-    id = Column(Integer, Sequence("encounter_type_id_seq"), primary_key = True)
+    id = Column(Integer, Sequence("visit_type_id_seq"), primary_key = True)
     name = Column(String(50), nullable = False)
     description = Column(Text)
     created_by = Column(Integer, ForeignKey("users.id"))
@@ -436,7 +472,7 @@ class Observation(Base):
     __tablename__ = "observations"
 
     id = Column(Integer, Sequence("observation_id_seq"), primary_key = True)
-    encounter = Column(Integer, ForeignKey("encounters.id"))
+    visit = Column(Integer, ForeignKey("visits.id"))
     date = Column(u"obs_date", DateTime)
     concept = Column(Integer, ForeignKey("concepts.id"))
     concept_value = Column(String(20), nullable = True)
@@ -447,8 +483,5 @@ class Observation(Base):
             server_onupdate = text("now()"))
     voided = Column(Boolean, default = False) 
 
-    __table_args = (UniqueConstraint("encounter", "concept"),)
-
-
-
+    __table_args = (UniqueConstraint("visit", "concept"),)
 

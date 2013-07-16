@@ -1,0 +1,56 @@
+<%inherit file="/base/index.html"/>
+<%block name="content">
+    <div class="container-fluid">
+       <!-- <form id="person_form" action="/person/save" method="post"> -->
+        ${form.begin(request.route_url('location_add'), id='location_form')}
+          ${form.csrf_token()}
+        <div class="row-fluid">
+            <div class="span6">
+                <label>Name</label>
+                ${form.text('name', class_="span12")}
+            </div><!--/span4-->    
+            <div class="span6">
+                <label>Type</label>
+                ${form.select('location_type', options=location_types, class_="span12")}
+            </div><!--/span4-->    
+        </div><!--row-fluid-->
+        <div class="row-fluid">
+            <div class="span6">
+                <label>Parent</label>
+                ${form.select('parent', options=parents)}
+            </div><!--/span4-->    
+        </div>
+        <div class="row-fluid">
+           <input class="btn" type="submit" value="Submit"/>
+        </div><!--row-fluid-->
+    </form>
+</div>    
+<div class="container-fluid">
+
+</div>
+<hr>
+<!--
+<script type="text/javascript">
+    function send_form()
+    {
+        var frm = $("#person_form");
+        console.log((frm.serialize()));
+        var url = "/person/save"; // the script where you handle the form input.
+        $.ajax({
+           type: "GET",
+           url: url,
+           data: frm.serialize(), // serializes the form's elements.
+           success: function(data)
+           {
+               alert("Success!!"); // show response from the php script.
+           },
+           error: function(data)
+           {
+               console.log(data);
+           }
+        });
+    return false; // avoid to execute the actual submit of the form.
+    }
+</script>
+-->
+</%block>

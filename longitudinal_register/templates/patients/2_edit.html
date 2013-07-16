@@ -1,0 +1,30 @@
+<%inherit file="/base/index.html"/>
+<%block name="content">
+ ${form.begin(request.route_url('person_save'), id='idea_add_form')}
+        <fieldset>
+            ${form.csrf_token()}
+            ${form.errorlist('health_id')}
+            ${form.label('health_id', 'Health ID:')}
+            ${form.text('health_id', size="60")}
+            <br />
+            ${form.errorlist('surname')}
+            ${form.label('label_surname', 'Surname:')}
+            ${form.text('surname', size="60")}
+            <br />
+            ${form.errorlist('other_names')}
+            ${form.label('other_names', 'Other names(s):')}
+            ${form.text('other_names', size="60")}
+            <br />
+            ${form.errorlist('gender')}
+            ${form.label('gender', 'Gender:')}
+            ${form.text('gender', size="60")}
+            <br /> 
+            ${form.errorlist('dob')}
+            ${form.label('dob', 'DOB:')}
+            ${form.text('dob', size="60")}
+            <br /> 
+            ${form.submit('form.submitted', 'Shoot', class_='submit')}
+        </fieldset>
+    ${form.end()}
+
+</%block>

@@ -1,0 +1,106 @@
+<div class="container-fluid">
+    <div class="row-fluid">
+                    <div class="span2 lightblue">
+                        <label>Health ID: </label>
+                    </div><!--/span-->
+                        ${person.health_id}
+
+</div>    
+       <!-- <form id="person_form" action="/person/save" method="post"> -->
+        ${form.begin(request.route_url('patient_save'), id='page')}
+          ${form.csrf_token()}
+          <div class="row-fluid">
+            <div class="span12">
+                <div class="row-fluid">
+                </div><!--row-fluid-->
+                <div class="row-fluid">
+                </div>
+                <div class="row-fluid">
+                    <div class="span4 lightblue">
+                       <h2>${person.surname}  ${person.other_names}</h2>
+                   </div><!--/span-->
+                </div><!--/row-->
+                <div class="row-fluid">
+                    <div class="span4 bgcolor">
+                        <label>Gender: </label>
+                        ${person.gender}
+                    </div><!--/span-->
+                    <div class="span4 bgcolor">
+                       <label>Date of Birth</label>
+                       ${person.dob}
+                    </div><!--/span-->
+                </div><!--/row-->
+            </div><!--/span-->
+        </div><!--/row-->
+        <hr>
+        <div class="row-fluid">
+            <div class="span4">
+                <label>Date of Visit</label>
+                ${form.text('date', class_='span6', id="dp1")}
+            </div><!--/span4-->    
+            <div class="span4">
+                <label>Health Centre</label>
+                ${form.select('health_unit', [(1, 'Kabuyanda'), (2, "Kabugu"), (3, "Kanywamaizi")], class_="span12")}
+            </div><!--/span4-->    
+        </div><!--row-fluid-->
+        <div class="row-fluid">
+            <div class="span4">
+                <label>Date of Enrollment</label>
+                ${form.text('date_of_enrollment', class_="span12")}
+            </div><!--/span4-->    
+            <div class="span4">
+                <label>ARVs Received</label>
+                ${form.select('regiment', [(0, "HAART"), (1, "Option A"), (2, "Option B"), (3, "None")], class_="span12")}
+            </div><!--/span4-->    
+            <div class="span4">
+                <label>Date Sample Taken</label>
+                ${form.select('regiment', [(0, "HAART"), (1, "Option A"), (2, "Option B"), (3, "None")],class_='span12',)}
+            </div><!--/span4-->    
+        </div>
+        <div class="row-fluid">
+            <div class="span4">
+                <label>Date (Results from PCR)</label>
+                ${form.text('date_of_delivery', class_="span12")}
+            </div><!--/span4-->    
+            <div class="span4">
+                <label>Delivery Outcome</label>
+                ${form.select('delivery_outcome', [(0, "Healthy"), (1, "Pre-term"), (2, "Still Born")],class_='span12',)}
+            </div><!--/span4-->    
+        </div><!--row-fluid-->
+        <div class="row-fluid">
+           <input class="btn" type="submit" value="Submit"/>
+        </div><!--row-fluid-->
+        
+        <div class="row-fluid">
+          <hr>
+        </div><!--row-fluid-->
+    </form>
+</div>    
+<div class="container-fluid">
+
+</div>
+<hr>
+<!--
+<script type="text/javascript">
+    function send_form()
+    {
+        var frm = $("#person_form");
+        console.log((frm.serialize()));
+        var url = "/person/save"; // the script where you handle the form input.
+        $.ajax({
+           type: "GET",
+           url: url,
+           data: frm.serialize(), // serializes the form's elements.
+           success: function(data)
+           {
+               alert("Success!!"); // show response from the php script.
+           },
+           error: function(data)
+           {
+               console.log(data);
+           }
+        });
+    return false; // avoid to execute the actual submit of the form.
+    }
+</script>
+-->
