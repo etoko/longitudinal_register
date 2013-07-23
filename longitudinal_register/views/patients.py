@@ -54,7 +54,6 @@ def person_add_view(request):
         print "FALSE"
     #print "health_id" in request.params.mixed().keys()
     health_id = request.POST['health_id']
-    print health_id
     form = Form(request, schema=PersonSchema())
     if form.validate():
         person = form.bind(models.Person())
@@ -75,7 +74,14 @@ def patient_dashboard(request):
     person = models.DBSession.query(models.Person)\
         .filter(models.Person.health_id == health_id).first()
     location = models.DBSession.query(models.Location).get(person.location)
-    return {"page": "Patient Dashboard", "person": person, "location":location}
+    patient = models.DBSession.query(models.Patient)\
+        .filter(models.Patient.person == person.id).first()
+    visits = []
+    if patient is not None:
+        visits = models.DBSession.query(models.Visit)\
+            .filter(models.Visit.patient == patient.id).all()
+    return {"page": "Patient Dashboard", "person": person, "location":location\
+        , "visits": visits}
 #
 #@view_config(route_name="add_person", renderer="persons/edit.html")
 #def page_add_person_(request):
@@ -96,8 +102,8 @@ def patients_add_page(request):
 @view_config(route_name="patients_list_page", renderer="patients/list.html")
 def patients_list_page(request):
     patients = models.DBSession.query(models.Person).all()
-    patients = [(patient.health_id, patient.surname + " " + patient.other_names)\
-        for patient in patients]
+    #patients = [(patient.health_id, patient.surname + " " + patient.other_names)\
+    #    for patient in patients]
     return {"page": "Patients List", "patients": patients, "items": patients, \
         "headings": headings}
 
@@ -121,11 +127,14 @@ class ANCSchema(formencode.Schema):
 
 @view_config(route_name="visit_add", renderer="forms/form.html")
 def view_visit_page(request):
+    visit_type = request.matchdict["form"]
     health_id = request.matchdict["health_id"]
-    person = models.DBSession.query(models.Person).filter(models.Person.health_id == health_id).first()
+    person = models.DBSession.query(models.Person)\
+        .filter(models.Person.health_id == health_id).first()
     visit_form = request.matchdict["form"] 
     form = Form(request, schema="ANCSchema")
-    return {"page": visit_form,"person": person, "form": FormRenderer(form)}
+    return {"page": visit_form,"person": person, "form": FormRenderer(form), \
+        "visit_type": visit_type}
     #if visit_form == "anc":
     #    return {"page": visit_form,"person": person}
     #elif visit_form == "eid":

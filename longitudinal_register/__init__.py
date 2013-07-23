@@ -76,4 +76,18 @@ def addroutes(config):
     config.add_route("health_unit_save_page", "/healthunit/add")
     config.add_route("health_unit_save", "/healthunit/save")
     config.add_route("health_unit_edit", "/healthunit/{name}/edit")
-    config.add_route("health_unit_dashboard", "/healthunit/{name}")
+    config.add_route("health_unit_dashboard", "/healthunit/{health_unit_id}")
+
+    #health_unit_types
+    config.add_route("health_unit_type_list", "/healthunittypes")
+    config.add_route("health_unit_type_save_page", "/healthunittype/add")
+    config.add_route("health_unit_type_save", "/healthunittype/save")
+    config.add_route("health_unit_type_edit", "/healthunittype/{name}/edit")
+    config.add_route("health_unit_type_dashboard", "/healthunittype/{name}")
+
+
+    #concepts
+    config.add_route("concept_list_page", "/concepts")
+    config.add_route("concept_add_page", "/concept/add")
+    config.add_route("concept_add_view", "/concept/save")
+    config.add_route("concept_view", "/concept/{id}")

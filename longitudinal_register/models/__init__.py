@@ -57,6 +57,7 @@ from sqlalchemy.sql.expression import text
 
 
 from sqlalchemy.orm import (
+  backref,
   column_property,
   relationship,
   scoped_session,
@@ -64,6 +65,7 @@ from sqlalchemy.orm import (
   synonym,
   )
 from sqlalchemy.orm.interfaces import MapperExtension
+from sqlalchemy.orm.collections import attribute_mapped_collection
 from zope.sqlalchemy import ZopeTransactionExtension
 from sqlalchemy.types import (
   Unicode,
@@ -297,10 +299,12 @@ class HealthUnit(Base):
 
     id = Column(Integer, Sequence("health_unit_seq_id"), primary_key = True)
     name = Column(String(100), nullable = False)
-    notes = Column(Text, nullable = True, default = "")
+    description = Column(Text, nullable = True)
     gps = Column(String(70), nullable=True)
-    location = Column(ForeignKey("locations.id"), nullable=False)
-    health_unit_type = Column(ForeignKey("health_unit_type.id"))
+    location = Column(Integer, ForeignKey("locations.id"), nullable=False)
+    location_id = relationship("Location", lazy="joined")
+    health_unit_type_id = Column(Integer, ForeignKey("health_unit_types.id"))
+    health_unit_type = relationship("HealthUnitType", lazy="joined")
 
     #def __init__():
    #     name = None
@@ -308,11 +312,11 @@ class HealthUnit(Base):
 
 class HealthUnitType(Base):
 
-    __tablename__ = "health_unit_type"
+    __tablename__ = "health_unit_types"
 
     id = Column(u"id", Integer, Sequence("health_unit_type_id_seq"), primary_key = True)
     name = Column(String(60), nullable = False)
-    notes = Column(Text, nullable = True)
+    description = Column(Text, nullable = True)
 
 
 class Person(Base, BaseExtension):
@@ -378,39 +382,35 @@ class RelationshipType(Base, BaseEntity):
     description = Column(u"description", String)
 
 
-
-
 class Concept(Base):
 
     __tablename__ = "concepts"
 
-
     id = Column(Integer, Sequence("concept_id_seq"), primary_key = True)
-    retired = Column(Boolean, nullable = False)
-    short_name = Column(String(200))
+    retired = Column(Boolean, nullable = False, default=False)
+    name = Column(String(200))
     description = Column(u"description", Text)
-    form_text = Column(u"form_text", Text)
-    datatype = Column(Integer, ForeignKey("concept_datatype.id"), nullable = False)
-    class_id = Column(Integer, ForeignKey("concept_class.id"), nullable = False)
-    is_set = Column(Boolean, nullable = False)
     created_by = Column(Integer, ForeignKey("users.id"))
     created_on = Column(DateTime, server_default = text("now()"))
-    default_charge = Column(Integer, nullable = True)
-    version = Column(String(30), nullable = True)
-    modified_by = Column(Integer, ForeignKey("users.id"), nullable = False)
+    modified_by = Column(Integer, ForeignKey("users.id"), nullable = True)
     modified_on = Column(DateTime, server_default = text("now()"),\
             server_onupdate = text("now()"))
     retired_by = Column(Integer, ForeignKey("users.id"), nullable = True)
     retired_on = Column(DateTime, nullable = True)
-    retire_reason = Column(String(255), nullable = False)
+    retire_reason = Column(String(255), nullable = True)
+    concept_answers = relationship("ConceptAnswer", \
+        primaryjoin="ConceptAnswer.concept==Concept.id")
+    __table_args = (UniqueConstraint("name"),)
 
 class ConceptAnswer(Base):
 
-    __tablename__ = "concept_answer"
+    __tablename__ = "concept_answers"
     
     id = Column(Integer, Sequence("concept_answer_seq_id"), primary_key = True)
     concept = Column(Integer, ForeignKey("concepts.id"))
-    #nswer_concept = Column()
+    answer_concept = Column(Integer, ForeignKey("concepts.id"))
+    __table_args = (UniqueConstraint("concept", "answer_concept"),)
+    
 
 class ConceptClass(Base):
 
@@ -433,8 +433,6 @@ class ConceptDatatype(Base):
     id = Column(Integer, Sequence("concept_datatype_id"), primary_key = True)
     name = Column(String(30), )
    
-
- 
 
 class Visit(Base):
 

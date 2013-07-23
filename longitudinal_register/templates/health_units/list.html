@@ -1,4 +1,13 @@
 <%inherit file="/base/list.html"/>
+<%block name="table_content">
+% for health_unit in items:
+   <tr>
+     <td><a href="${request.route_path('health_unit_dashboard', health_unit_id=health_unit.id, page=health_unit.name)}">${health_unit.name}</a></td>
+     <td>${health_unit.health_unit_type.name}</td>
+     <td>${health_unit.location}</td>
+   </tr>
+% endfor
+</%block>
 <%block name="list_actions">
   <a href="${request.route_path('health_unit_save_page')}"> Create New Health Unit </a>
 </%block>

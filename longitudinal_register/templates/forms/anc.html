@@ -1,6 +1,6 @@
     <div class="container-fluid">
        <!-- <form id="person_form" action="/person/save" method="post"> -->
-        ${form.begin(request.route_url('patient_save'), id='page')}
+        ${form.begin(request.route_url('visit_save', health_id=person.health_id, form=visit_type), id='page')}
           ${form.csrf_token()}
           <div class="row-fluid">
             <div class="span12">

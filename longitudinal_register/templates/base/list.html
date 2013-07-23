@@ -51,7 +51,7 @@ $("#arrt").delegate("#butt", "click", function(e){
           No records found.
       % else:
         <div id="collapse4" class="body">
-        <table width="101%" border="0" class="table table-bordered table-condensed table-hover table-striped" id="dataTable">
+        <table width="101%" border="0" class="table table-bordered table-condensed table-hover table-striped" id="example">
           <thead>
               <tr>
              % for heading in headings:
@@ -60,6 +60,7 @@ $("#arrt").delegate("#butt", "click", function(e){
               </tr>
           </thead>
           <tbody>
+          <%block name="table_content">
             % for item in items:
               <tr>
                   <td>${item[1]}</td>
@@ -69,6 +70,7 @@ $("#arrt").delegate("#butt", "click", function(e){
                   <td></td> 
               <tr>
             % endfor
+          </%block>
           </tbody>
         </table>
          </div><!--body-->

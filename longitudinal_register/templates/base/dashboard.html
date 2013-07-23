@@ -11,18 +11,16 @@
                   <div class="span8">
                       <div class="box">
                           <header>
-                              <h5>Patient Particulars</h5>
+                              <h5>${page} Particulars</h5>
                               <div class="toolbar">
                                   <span class="label label-warning">
-                                      &lt;p&gt;Particulars&lt;/p&gt;
+                                      Particulars
                                   </span>
                               </div>
                           </header>
                           <div class="body">
-                            <h4>${person.health_id}</h4>
-                            <h2>${person.surname} ${person.other_names}</h2>
-                            <p>Date of Birth: ${person.dob}</p>
-                            <p>Gender: ${person.gender}</p>
+                          <%block name="dashboard_meta">
+                          </%block>
                           </div><!--body-->
                       </div><!--box-->
                   </div><!--span8-->
@@ -33,14 +31,14 @@
 
                             <div class="toolbar">
                                 <span class="label label-info">
-                                    Patient Visit Type 
+                                    
                                 </span>
                             </div>
                           </header>
                           <div class="body">
                             <ol>
-                               <li><a href="${request.route_path('visit_add', health_id=person.health_id, form='anc')}">ANC Visit</a></li>
-                               <li><a href="${request.route_path('visit_add', health_id=person.health_id, form='eid')}">EID</a></li>
+                               <li><a href="">ANC Visit</a></li>
+                               <li><a href="">EID</a></li>
                             </ol> 
                           </div>
                       </div>
@@ -50,7 +48,7 @@
                   <div class="span12">
                       <div class="box">
                           <header>
-                            <h5>Visits</h5>
+                            <h5><%block name="table1_heading"/></h5>
 
                             <div class="toolbar">
                                 <span class="label label-info">
@@ -60,7 +58,7 @@
                           </header>
                           <div class="body">
 
-  <div class="container-fluid outer">
+  <div class="container-fluid">
       <div class="row-fluid">
           <!-- .inner -->
           <div class="span12 inner">
@@ -501,7 +499,6 @@
               </div>
               <!--End Datatables-->
 
-              <hr>
                       </div>
                   </div>
                   <!-- /.span12 -->

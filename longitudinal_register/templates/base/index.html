@@ -19,10 +19,14 @@
         <link type="text/css" rel="stylesheet" href="${request.static_url('longitudinal_register:static/css/uniform.default.css')}">
         <link rel="stylesheet" href="${request.static_url('longitudinal_register:static/css/timepicker.css')}">
         <link rel="stylesheet" href="${request.static_url('longitudinal_register:static/css/datepicker.css')}">
+        <link rel="stylesheet" href="${request.static_url('longitudinal_register:static/css/daterangepicker.css')}">
         <link rel="stylesheet" href="${request.static_url('longitudinal_register:static/css/bootstrap-toggle-buttons.css')}">
         <link type="text/css" rel="stylesheet" href="${request.static_url('longitudinal_register:static/css/calendar.css')}">
         
         <link rel="stylesheet" href="${request.static_url('longitudinal_register:static/css/theme.css')}">
+
+<%block name="header">
+</%block>
 
         <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
@@ -31,7 +35,6 @@
         <link type="text/css" rel="stylesheet" href="${request.static_url('longitudinal_register:static/css/font-awesome-ie7.min.css')}"/>
         <![endif]-->
 
-        <script src="${request.static_url('longitudinal_register:static/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js')}"></script>
     </head>
     <body>
         <!-- BEGIN WRAP -->
@@ -162,7 +165,15 @@
                 <ul id="menu" class="unstyled accordion collapse in">
                     <li><a href="${request.route_path('patients_list_page')}"><i class="icon-user icon-large"></i> Patients</a></li>
                     <li><a href="${request.route_path('locations_list')}"><i class="icon-file icon-large"></i> Locations</a></li>
-                    <li><a href="${request.route_path('health_units_list')}"><i class="icon-hospital icon-large"></i> Health Units</a></li>
+                   <li class="accordion-group">
+                     <a data-parent="#menu" data-toggle="collapse" class="accordion-toggle" data-target="#component-nav"><i class="icon-tasks icon-large"></i> Health Units <span class="label label-inverse pull-right">2</span></a>
+                      <ul class="collapse" id="component-nav">
+                        <li><a href="${request.route_path('health_units_list')}"><i class="icon-hospital icon-large"></i> Health Units</a></li>
+                        <li><a href="${request.route_path('health_unit_type_list')}"><i class="icon-hospital icon-large"></i> Health Unit Type</a></li>
+                    </ul>
+                   </li><!--accordion-group-->
+                    <li><a href="${request.route_path('concept_list_page')}"><i class="icon-hospital icon-large"></i> Concepts</a></li>
+                    <li><a href="${request.route_path('concept_list_page')}"><i class="icon-user icon-large"></i> Users</a></li>
                 </ul>
                 <!-- END MAIN NAVIGATION -->
 
@@ -395,13 +406,21 @@
 
         <script>window.jQuery.ui || document.write('<script src="${request.static_url('longitudinal_register:static/js/vendor/jquery-ui-1.10.0.custom.min.js')}"><\/script>')</script>
 
-
         <script src="${request.static_url('longitudinal_register:static/js/vendor/bootstrap.min.js')}"></script>
-
-        <script src="${request.static_url('longitudinal_register:static/js/lib/jquery.tablesorter.min.js')}"></script>
-
         <script src="${request.static_url('longitudinal_register:static/js/lib/jquery.mousewheel.js')}"></script>
+        <script src="${request.static_url('longitudinal_register:static/js/lib/jquery.tablesorter.min.js')}"></script>
+        <script src="${request.static_url('longitudinal_register:static/js/lib/prettify.js')}"></script>
         <script src="${request.static_url('longitudinal_register:static/js/lib/jquery.sparkline.min.js')}"></script>
+        <script src="${request.static_url('longitudinal_register:static/js/lib/jquery.dualListBox-1.3.min.js')}"></script>
+        <script src="${request.static_url('longitudinal_register:static/js/lib/bootstrap-inputmask.js')}"></script>
+        <script src="${request.static_url('longitudinal_register:static/js/lib/jquery.autosize-min.js')}"></script>
+        <script src="${request.static_url('longitudinal_register:static/js/lib/jquery.inputlimiter.1.3.1.min.js')}"></script>
+        <script src="${request.static_url('longitudinal_register:static/js/lib/jquery.tagsinput.min.js')}"></script>
+        <script src="${request.static_url('longitudinal_register:static/js/lib/chosen.jquery.min.js')}"></script>
+        <script src="${request.static_url('longitudinal_register:static/js/lib/jquery.uniform.min.js')}"></script>
+        <script src="${request.static_url('longitudinal_register:static/js/lib/jquery.validVal-4.3.2.js')}"></script>
+        <script src="${request.static_url('longitudinal_register:static/js/lib/date.js')}"></script>
+        <script src="${request.static_url('longitudinal_register:static/js/lib/daterangepicker.js')}"></script>
         <script src="${request.static_url('longitudinal_register:static/js/lib/flot/jquery.flot.js')}"></script>
         <script src="${request.static_url('longitudinal_register:static/js/lib/flot/jquery.flot.pie.js')}"></script>
         <script src="${request.static_url('longitudinal_register:static/js/lib/flot/jquery.flot.selection.js')}"></script>
@@ -413,6 +432,11 @@
 
 
         <script src="${request.static_url('longitudinal_register:static/js/main.js')}"></script>
+        <script>
+            $(function() {
+                formGeneral();
+            });
+        </script>
 
         
 
@@ -426,5 +450,46 @@
         
         <script type="text/javascript" src="${request.static_url('longitudinal_register:static/js/style-switcher.js')}"></script>
         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </body>
 </html>

@@ -1,0 +1,35 @@
+<%inherit file="/base/edit.html"/>
+<%block name="header">
+<script type="text/javascript" src="${request.static_url('longitudinal_register:static/js/vendor/moder    nizr-2.6.2-respond-1.1.0.min.js')}"></script>
+
+</%block>
+<%block name="content">
+    <div class="container-fluid">
+       <!-- <form id="person_form" action="/person/save" method="post"> -->
+        ${form.begin(request.route_url('concept_add_view'), id='concept_form')}
+          ${form.csrf_token()}
+        <div class="row-fluid">
+            <div class="span6">
+                <label for="name">Name</label>
+                ${form.text('name', class_="span12")}
+            </div><!--/span4-->    
+        </div><!--row-fluid-->
+        <div class="row-fluid">
+            <div class="span6">
+                <label>Description</label>
+                ${form.textarea('description', maxlength=255, class_="span12")}
+            </div><!--/span4-->    
+        </div>
+        <div class="row-fluid">
+            <div class="span6">
+            <label>Concept Answer</label>
+             ${form.select('concept_answer', concepts ,class_="span12")}
+            </div><!--/span6-->    
+        </div><!--row-fluid-->
+        <div class="row-fluid">
+           <input class="btn" type="submit" value="Submit"/>
+        </div><!--row-fluid-->
+    ${form.end()}
+</div>    
+<div class="container-fluid">
+</%block>

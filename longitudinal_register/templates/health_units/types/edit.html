@@ -1,20 +1,22 @@
 <%inherit file="/base/edit.html"/>
 <%block name="content">
 <!-- <form id="person_form" action="/person/save" method="post"> -->
- ${form.begin(request.route_url('health_unit_save'), id='health_unit_form')}
+ ${form.begin(request.route_url('health_unit_type_save'), id='health_unit_type_form')}
    ${form.csrf_token()}
    <div class="row-fluid">
      <div class="span12 inner">
          <div class="row-fluid">
          </div><!--row-fluid-->
          <div class="row-fluid">
-             <div class="span4 lightblue">
+             <div class="span6 lightblue">
                  <label for="name">Name</label>
                     ${form.text('name', placeholder="Name", class_="span12")}
             </div><!--/span-->
-            <div class="span4 lightblue">
-                 <label for="location">Location</label>
-                 ${form.select("location", locations, class_="span12 chzn-select")}
+         </div><!--/row-->
+         <div class="row-fluid">
+            <div class="span6 lightblue">
+                 <label for="description">Description</label>
+                 ${form.textarea("description", placeholder="Description", class_="span12")}
                   <!--
                      <div class="input-prepend">
                          <span class="add-on"><i class="icon-user"></i></span> -->
@@ -22,18 +24,8 @@
              </div><!--/span-->
          </div><!--/row-->
          <div class="row-fluid">
-             <div class="span4 bgcolor">
-                 <label for="health_unit_type_id">Health Centre Type</label>
-                 ${form.select('health_unit_type_id', health_unit_types, class_="span12 chzn-select")}
-             </div><!--/span-->
-             <div class="span4 bgcolor">
-                <label for="gps">GPS Coordinates:</label>
-                 ${form.text('gps', class_="span12")}
-             </div><!--/span-->
-         </div><!--/row-->
-         <div class="row-fluid">
            <div class="span4">
-             ${form.submit("Submit", "Save", class_="btn")}
+             ${form.submit("Submit", "Submit", class_="btn")}
            </div>
          </div><!--/row-->
      </div><!--/span-->

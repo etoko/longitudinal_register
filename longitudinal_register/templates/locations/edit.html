@@ -2,7 +2,7 @@
 <%block name="content">
     <div class="container-fluid">
        <!-- <form id="person_form" action="/person/save" method="post"> -->
-        ${form.begin(request.route_url('location_add'), id='location_form')}
+        ${form.begin(request.route_url('location_add'), id='location_form', class_="form-horizontal")}
           ${form.csrf_token()}
         <div class="row-fluid">
             <div class="span6">
@@ -11,13 +11,13 @@
             </div><!--/span4-->    
             <div class="span6">
                 <label>Type</label>
-                ${form.select('location_type', options=location_types, class_="span12")}
+                ${form.select('location_type', options=location_types, class_="span12 chzn-select")}
             </div><!--/span4-->    
         </div><!--row-fluid-->
         <div class="row-fluid">
             <div class="span6">
                 <label>Parent</label>
-                ${form.select('parent', options=parents)}
+                ${form.select('parent', options=parents, class_="span12 chzn-select")}
             </div><!--/span4-->    
         </div>
         <div class="row-fluid">
