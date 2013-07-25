@@ -58,6 +58,9 @@ def addroutes(config):
     config.add_route("patients_list_page", "/patients")
     config.add_route("patient_delete", "/patient/{health_id}/delete")
     config.add_route("patient_dashboard_page", "/patient/{health_id}")
+    config.add_route("person_relations_list", "/person/{person_a}/relations")
+    config.add_route("person_relations_add_page", "/person/{health_id}/relations")
+    config.add_route("person_relations_save", "/person/relation/save")
 
 
     #visits
@@ -91,3 +94,9 @@ def addroutes(config):
     config.add_route("concept_add_page", "/concept/add")
     config.add_route("concept_add_view", "/concept/save")
     config.add_route("concept_view", "/concept/{id}")
+
+    #forms
+    config.add_route("form_list", "/forms")
+    config.add_route("form_save_page", "/forms/add")
+    config.add_route("form_save", "/forms/save")
+    config.add_route("form_dashboard", "/forms/{form_id}")
