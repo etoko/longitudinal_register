@@ -51,14 +51,16 @@ def health_unit_add(request):
     if form.validate():
         health_unit = form.bind(models.HealthUnit())
         h_unit = None
-        with transaction.manager:
+        #with transaction.manager:
             #location = models.DBSession.query(models.Location).get(health_unit.location)
             #unit_type = models.DBSession.query(models.HealthUnitType).get(health_unit.health_unit_type_id)
             #health_unit.location = location
             #health_unit.health_unit_type_id = unit_type
-            h_unit = models.DBSession.merge(health_unit)
-            health_unit_id = h_unit.id
-            print "HEALTH UNIT ID: ", health_unit_id
+        h_unit = models.DBSession.merge(health_unit)
+        models.DBSession.flush()
+        models.DBSession.close()
+        health_unit_id = h_unit.id
+        print "HEALTH UNIT ID: ", health_unit_id
         health_units = models.DBSession.query(models.HealthUnit).all()
         units = [(health_unit.id, health_unit.name) for health_unit in health_units]
         return exc.HTTPFound(request.route_url("health_unit_dashboard", health_unit_id=health_unit_id,page="Health Units", items=units, headings=health_unit_headings))
