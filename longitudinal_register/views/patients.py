@@ -18,10 +18,13 @@ import formencode
 from pyramid_simpleform import Form
 from pyramid_simpleform.renderers import FormRenderer
 
+from sqlalchemy.orm import joinedload
+
 from webhelpers.paginate import (
   Page,
   PageURL,
   )
+import longitudinal_register
 
 #from longitudinal_register.controllers import (
 #  PatientController,
@@ -46,13 +49,6 @@ class PersonSchema(Schema):
 
 @view_config(route_name="person_save_view", renderer="json")
 def person_add_view(request):
-    print "PROCESSING PATIENT.............................."
-    if "health_id" in request.POST:
-        
-        print "TRUE"
-    else:
-        print "FALSE"
-    #print "health_id" in request.params.mixed().keys()
     health_id = request.POST['health_id']
     form = Form(request, schema=PersonSchema())
     if form.validate():
@@ -71,8 +67,11 @@ def person_add_view(request):
 @view_config(route_name="patient_dashboard_page", renderer="patients/dashboard.html")
 def patient_dashboard(request):
     health_id = request.matchdict["health_id"]
-    person = models.DBSession.query(models.Person)\
+    person = models.DBSession.query(models.Person).\
+        options(joinedload(models.Person.relations))\
         .filter(models.Person.health_id == health_id).first()
+    if person is None:
+        person = models.DBSession.query(models.Person).get(health_id)
     location = models.DBSession.query(models.Location).get(person.location)
     patient = models.DBSession.query(models.Patient)\
         .filter(models.Patient.person == person.id).first()
@@ -80,17 +79,12 @@ def patient_dashboard(request):
     if patient is not None:
         visits = models.DBSession.query(models.Visit)\
             .filter(models.Visit.patient == patient.id).all()
-    return {"page": "Patient Dashboard", "person": person, "location":location\
+    forms = models.DBSession.query(models.Form).all()
+    print forms
+    return {"page": "Patient Dashboard", "person": person, "forms": forms, "location":location\
         , "visits": visits}
-#
-#@view_config(route_name="add_person", renderer="persons/edit.html")
-#def page_add_person_(request):
-#    return {"person": "edit"}
-#
-#@view_config(route_name="list_persons", renderer="persons/list.html")
-#def page_list_persons(request):
-#    return {"persons": "Us", "other": "The others"}
-#
+
+
 @view_config(route_name="patient_add_page", renderer="patients/edit.html")
 def patients_add_page(request):
     form = Form(request, schema=PersonSchema)
@@ -102,10 +96,49 @@ def patients_add_page(request):
 @view_config(route_name="patients_list_page", renderer="patients/list.html")
 def patients_list_page(request):
     patients = models.DBSession.query(models.Person).all()
-    #patients = [(patient.health_id, patient.surname + " " + patient.other_names)\
-    #    for patient in patients]
     return {"page": "Patients List", "patients": patients, "items": patients, \
         "headings": headings}
+
+
+#Relationships#######################################
+
+class RelationshipSchema(Schema):
+    person_a = formencode.validators.Int()
+    person_b = formencode.validators.Int()
+    type = formencode.validators.Int()
+    allow_extra_fields = True
+
+@view_config(route_name="person_relations_add_page", renderer="patients/relations.add.html")
+def person_relation_add_page(request):
+    return {"page": "Add New Relation"}
+
+@view_config(route_name="person_relations_list", renderer="patients/relations/list.html")
+def person_relations_page(request):
+    form = Form(request, schema=ANCSchema)
+    relationship_types = models.DBSession.query(models.RelationshipType).all()
+    items = patients_list_page(request)
+    items["form"] = FormRenderer(form)
+    items["relationship_types"] = \
+        [(relationship_type.id, relationship_type.name) for relationship_type in relationship_types]
+    items['person_a'] = request.matchdict['person_a']
+    items['health_id'] = request.matchdict['person_a']
+    
+    return items
+
+
+@view_config(route_name="person_relations_save", renderer="json")
+def person_relation_save_view(request):
+    print request.params.mixed()
+    person_a = request.params['person_a']
+    person_b = request.params['person_b']
+    form = Form(request, RelationshipSchema())
+    if form.validate():
+        relationship = form.bind(models.Relationship())
+        with transaction.manager:
+            models.DBSession.add(relationship)
+        return HTTPFound(request.route_url("patient_dashboard_page", health_id=person_a))
+    else:
+        print form.all_errors()
 
 
 ##Visits#########################################################################
@@ -131,10 +164,19 @@ def view_visit_page(request):
     health_id = request.matchdict["health_id"]
     person = models.DBSession.query(models.Person)\
         .filter(models.Person.health_id == health_id).first()
+    form_type = models.DBSession.query(models.Form).options(joinedload('form_concepts')).get(visit_type)
     visit_form = request.matchdict["form"] 
     form = Form(request, schema="ANCSchema")
-    return {"page": visit_form,"person": person, "form": FormRenderer(form), \
-        "visit_type": visit_type}
+    form_concepts = form_type.form_concepts
+    control_labels = {}
+    if form_concepts:
+        for concept in form_concepts:
+            concept_model = models.DBSession.query(models.Concept).get(concept.concept)
+            control_labels[concept.concept] = concept_model.name
+
+    return {"page": form_type.name, "person": person, "form": FormRenderer(form), \
+        "visit_type": visit_type, "form_type": form_type, \
+        "control_labels": control_labels}
     #if visit_form == "anc":
     #    return {"page": visit_form,"person": person}
     #elif visit_form == "eid":

@@ -1,0 +1,14 @@
+<%inherit file="/base/list.html"/>
+<%block name="table_content">
+% if items:
+  % for concept_datatype in items:
+  <tr>
+    <td>${concept_datatype.name}</td>
+    <td>${concept_datatype.description}</td>
+  </tr>
+  % endfor
+% endif
+</%block>
+<%block name="list_actions">
+<a href="${request.route_path('concept_datatype_save_page')}">Create New Concept Data Type</a>
+</%block>

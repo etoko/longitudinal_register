@@ -92,11 +92,19 @@ def addroutes(config):
     #concepts
     config.add_route("concept_list_page", "/concepts")
     config.add_route("concept_add_page", "/concept/add")
-    config.add_route("concept_add_view", "/concept/save")
+    config.add_route("concept_save", "/concept/save")
+    config.add_route("concept_edit_page", "/concept/{concept_id}/edit")
     config.add_route("concept_view", "/concept/{id}")
+
+    #concept_datatypes
+    config.add_route("concept_datatype_list_page", "/concepts/datatypes")
+    config.add_route("concept_datatype_save", "/concepts/datatypes/save")
+    config.add_route("concept_datatype_save_page", "/concepts/datatypes/edit")
 
     #forms
     config.add_route("form_list", "/forms")
-    config.add_route("form_save_page", "/forms/add")
+    config.add_route("form_edit_page", "/forms/{form_id}/edit")
+    config.add_route("form_add_page", "/forms/add")
     config.add_route("form_save", "/forms/save")
     config.add_route("form_dashboard", "/forms/{form_id}")
+    config.add_route("form_list_format", "/forms/list/{format}")

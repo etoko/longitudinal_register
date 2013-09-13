@@ -30,8 +30,8 @@ class VisitSchema(Schema):
     modified_on = validators.DateValidator()
     
 @view_config(route_name="visit_list", renderer="json")
-def list_visits(request):
-    DNSession.Query(Visit).all()
+def visit_list(request):
+    DBSession.Query(Visit).all()
 
 @view_config(route_name="visit_edit", renderer="patients/visit.html")
 def visit_view(request):
@@ -43,3 +43,6 @@ def visit_view(request):
         visit = form.bind(Visit())
         with transaction.manager:
             DBSession.add(visit)
+
+def visit_render_form(request):
+    pass

@@ -27,6 +27,8 @@
 
 <%block name="header">
 </%block>
+<%block name="page_specific_header">
+</%block>
 
         <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
@@ -172,8 +174,15 @@
                         <li><a href="${request.route_path('health_unit_type_list')}"><i class="icon-hospital icon-large"></i> Health Unit Type</a></li>
                     </ul>
                    </li><!--accordion-group-->
-                    <li><a href="${request.route_path('concept_list_page')}"><i class="icon-hospital icon-large"></i> Concepts</a></li>
+                   <li class="accordion-group">
+                     <a data-parent="#menu" data-toggle="collapse" class="accordion-toggle" data-target="#concepts-nav"><i class="icon-tasks icon-large"></i> Concepts <span class="label label-inverse pull-right">2</span></a>
+                      <ul class="collapse" id="concepts-nav">
+                        <li><a href="${request.route_path('concept_list_page')}"><i class="icon-hospital icon-large"></i> Concepts</a></li>
+                        <li><a href="${request.route_path('concept_datatype_list_page')}"><i class="icon-hospital icon-large"></i> Concept Data Type</a></li>
+                    </ul>
+                   </li><!--accordion-group-->
                     <li><a href="${request.route_path('concept_list_page')}"><i class="icon-user icon-large"></i> Users</a></li>
+                    <li><a href="${request.route_path('form_list')}"><i class="icon-user icon-large"></i> Forms </a></li>
                 </ul>
                 <!-- END MAIN NAVIGATION -->
 
@@ -382,18 +391,13 @@
              aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="helpModalLabel"><i class="icon-external-link"></i> Help</h3>
+                <h3 id="helpModalLabel"><i class="icon-external-link"></i> <%block name="dialog_header"/></h3>
             </div>
             <div class="modal-body">
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-                    ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                    nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-                    anim id est laborum.
-                </p>
+              <%block name="dialog_content"/>
             </div>
             <div class="modal-footer">
+                <%block name="dialog_footer"/>
 
                 <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
             </div>

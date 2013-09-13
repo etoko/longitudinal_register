@@ -1,5 +1,5 @@
 <%inherit file="index.html"/>
-<%block name="header_content">
+<%block name="header">
 
 
         <script>window.jQuery || document.write('<script src="${request.static_url('longitudinal_register:static/js/vendor/jquery-1.9.1.min.js')}"><\/script>')</script>
@@ -28,8 +28,7 @@
 </script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#example').dataTable( {
-    } );
+    $('#example').dataTable();
 } );
 </script>
 
@@ -40,6 +39,8 @@ $("#arrt").delegate("#butt", "click", function(e){
 </script>
 
 </%block>
+
+
 <%block name="content">
 <div class="container-fluid outer">
   <div class="row-fluid">

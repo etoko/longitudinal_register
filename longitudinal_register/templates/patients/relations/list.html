@@ -1,0 +1,30 @@
+<%inherit file="/base/list.html"/>
+<%block name="table_content">
+% for patient in patients:
+<tr>
+
+  <td><a href="#helpModal" onclick="$('#person_b').val('${patient.id}');" rel="tooltip" data-placement="bottom" data-toggle="modal">${patient.health_id}</a></td>
+
+  <td>${patient.surname} ${patient.other_names}</td>
+  <td>${patient.location}</td>
+</tr>
+% endfor
+</%block>
+<%block name="list_actions">
+  <a href="${request.route_path('patient_add_page')}"> Enter New Patient </a>
+</%block>
+
+<%block name="dialog_content">
+${form.begin(request.route_url('person_relations_save'))}
+${form.csrf_token()} 
+${form.hidden('person_a', value=person_a)}
+${form.hidden('person_b')}
+<label for="relationship_type">Relationship Type</label> 
+${form.select('type', relationship_types, class_="span4 chzn-select")}
+${form.submit('submit', class_="btn")}
+${form.end()}
+</%block>
+
+<%block name="dialog_footer">
+  <button class="btn">Save</button>
+</%block>

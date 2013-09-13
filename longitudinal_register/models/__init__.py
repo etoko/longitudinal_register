@@ -394,6 +394,7 @@ class HealthUnitType(Base):
 class Concept(Base):
 
     __tablename__ = "concepts"
+    __table_args = (UniqueConstraint("name"),)
 
     id = Column(Integer, Sequence("concept_id_seq"), primary_key = True)
     retired = Column(Boolean, nullable = False, default=False)
@@ -407,9 +408,8 @@ class Concept(Base):
     retired_by = Column(Integer, ForeignKey("users.id"), nullable = True)
     retired_on = Column(DateTime, nullable = True)
     retire_reason = Column(String(255), nullable = True)
-    concept_answers = relationship("ConceptAnswer", \
+    concept_answers = relationship("ConceptAnswer", lazy="joined", \
         primaryjoin="ConceptAnswer.concept==Concept.id")
-    __table_args = (UniqueConstraint("name"),)
 
 class ConceptAnswer(Base):
 
@@ -417,7 +417,7 @@ class ConceptAnswer(Base):
     
     id = Column(Integer, Sequence("concept_answer_seq_id"), primary_key = True)
     concept = Column(Integer, ForeignKey("concepts.id"))
-    answer_concept = Column(Integer, ForeignKey("concepts.id"))
+    concept_answer = Column(Integer, ForeignKey("concepts.id"))
     __table_args = (UniqueConstraint("concept", "answer_concept"),)
     
 
@@ -435,12 +435,14 @@ class ConceptClass(Base):
     retired_on = Column(DateTime, server_default = text("now()"), nullable = True)
     retire_reason = Column(Text, nullable = True)
 
-class ConceptDatatype(Base):
+class ConceptDataType(Base):
     
     __tablename__ = "concept_datatype"
+    __table_args = (UniqueConstraint("name"),)
 
     id = Column(Integer, Sequence("concept_datatype_id"), primary_key = True)
     name = Column(String(30), )
+    description = Column(Text)
    
 
 class Visit(Base):
@@ -500,7 +502,8 @@ class Form(Base):
     name = Column(String(30))
     version = Column(String(20))
     description = Column(Text)
-    concepts = relationship("FormConcept")
+    form_concepts = relationship("FormConcept", lazy="joined", 
+        primaryjoin="FormConcept.form == Form.id")
     created_by = Column(Integer, ForeignKey("users.id"))
     created_on = Column(DateTime, server_default = text("now()"))
     modified_by = Column(Integer, ForeignKey("users.id"))

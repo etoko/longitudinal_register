@@ -1,0 +1,35 @@
+<%inherit file="/base/edit.html"/>
+<%block name="content">
+<!-- <form id="person_form" action="/person/save" method="post"> -->
+ ${form.begin(request.route_url('concept_datatype_save'), id='concept_datatype_form')}
+   ${form.csrf_token()}
+   <div class="row-fluid">
+     <div class="span12 inner">
+         <div class="row-fluid">
+         </div><!--row-fluid-->
+         <div class="row-fluid">
+             <div class="span6 lightblue">
+                 <label for="name">Name</label>
+                    ${form.hidden('concept_datatype', value="-1")}
+                    ${form.text('name', placeholder="Name", class_="span12")}
+            </div><!--/span-->
+         </div><!--/row-->
+         <div class="row-fluid">
+            <div class="span6 lightblue">
+                 <label for="description">Description</label>
+                 ${form.textarea("description", placeholder="Description", class_="span12")}
+                  <!--
+                     <div class="input-prepend">
+                         <span class="add-on"><i class="icon-user"></i></span> -->
+                  <!--   </div>--><!--input-prepend-->
+             </div><!--/span-->
+         </div><!--/row-->
+         <div class="row-fluid">
+           <div class="span4">
+             ${form.submit("Submit", "Save", class_="btn")}
+           </div>
+         </div><!--/row-->
+     </div><!--/span-->
+ </div><!--/row-->
+</%block>
+~                      

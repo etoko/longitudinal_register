@@ -39,28 +39,28 @@
 
     <div class="container-fluid">
        <!-- <form id="person_form" action="/person/save" method="post"> -->
-        ${form.begin(request.route_url('concept_add_view'), id='concept_form')}
+        ${form.begin(request.route_url('concept_save'), id='concept_edit_form')}
           ${form.csrf_token()}
         <div class="row-fluid">
             <div class="span6">
-                <label for="name">Name</label>
-                ${form.text('name', class_="span12")}
+                <h4>
+                ${concept.name}
+                ${form.hidden('concept',value=concept.id)}
+                </h4>
+                % if concept.concept_answers:
+                  % for answer in concept.concept_answers:
+                    ${answer.concept_answer}
+                  % endfor
+                % endif
             </div><!--/span4-->    
         </div><!--row-fluid-->
-        <div class="row-fluid">
-            <div class="span6">
-                <label>Description</label>
-                ${form.textarea('description', maxlength=255, class_="span12")}
-            </div><!--/span4-->    
-        </div>
-
 
   <!-- BEGIN DUAL SELECT WITH FILTER-->
   <div class="row-fluid">
       <div class="span12">
           <div class="box">
               <header>
-                  <h5><i class="icon-th-large"></i> Concept Answers</h5>
+                  <h5><i class="icon-th-large"></i> Concepts</h5>
 
                   <ul class="nav pull-right">
                       <li><a href="#">Link</a></li>
@@ -117,7 +117,8 @@
                               <input id="box2Filter" type="text" placeholder="Filter">
                               <button id="box2Clear" class="btn btn-warning" type="button">x</button>
                           </div>
-                          <select name="concept_answers" id="box2View" multiple="multiple" class="span12" size="10">-->
+                          <!--<select name="concept_answer" id="box2View" multiple="multiple" class="span12" size="10">-->
+                         ${form.select('concept_answer', concepts, id="box2View", multiple="multiple", class_="span12", size="10")}
                           </select><br/>
 
                           <div class="alert alert-block">

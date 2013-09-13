@@ -1,4 +1,11 @@
 <%inherit file="/base/index.html"/>
+<%block name="page_specific_header">
+  <script type="text/javascript">
+  $(document).ready(function() {
+      $('#visit_forms').dataTable();
+  } );
+  </script>
+</%block>
 <%block name="content">
 <!-- #content -->
 <div class="content">
@@ -8,7 +15,7 @@
           <!-- .inner -->
           <div class="span12 inner">
               <div class="row-fluid">
-                  <div class="span8">
+                  <div class="span7">
                       <div class="box">
                           <header>
                               <h5>Patient Particulars</h5>
@@ -24,10 +31,18 @@
                             <p><b>Date of Birth:</b> ${person.dob}</p>
                             <p>Gender:</b> ${person.gender}</p>
                             <p><b>Cell:</b> ${location.name}
-                          </div><!--body-->
+                            <hr>
+                            <h4>Relations</h4>
+                            % if person.relations:
+                               % for relation in person.relations:
+                              <p>${relation.person_b}</p>
+                               % endfor
+                            % endif
+                             <a href="${request.route_path('person_relations_list', person_a=person.id)}">Create Relationship</a>
+                         </div><!--body-->
                       </div><!--box-->
                   </div><!--span8-->
-                  <div class="span4">
+                  <div class="span5">
                       <div class="box">
                           <header>
                             <h5>Enter New Visit</h5>
@@ -39,6 +54,17 @@
                             </div>
                           </header>
                           <div class="body">
+                            <table id="visit_forms" class="table table-bordered table-condensed table-hover table-striped">
+                              <thead><tr><td>Form</td><td>Description</td></tr>
+                              </thead>
+                              <tbody><!--
+                                <tr><td>ANC</td><td>ANC Visit Form</td></tr>
+                                <tr><td>ANC</td><td>ANC Visit Form</td></tr> -->
+                                % for form in forms:
+                                   <tr><td>${form.id}</td><td><a href="${request.route_path('visit_add', health_id=person.health_id,form=form.id)}">${form.name}</a></td></tr> 
+                                % endfor
+                              </tbody>
+                            </table>
                             <ol>
                                <li><a href="${request.route_path('visit_add', health_id=person.health_id, form='anc')}">ANC Visit</a></li>
                                <li><a href="${request.route_path('visit_add', health_id=person.health_id, form='eid')}">EID</a></li>

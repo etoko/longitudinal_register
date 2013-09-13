@@ -1,1 +1,14 @@
-<%inherit file="base/list.html"/>
+<%inherit file="/base/list.html"/>
+
+<%block name="table_content">
+  % for form in items:
+    <tr>
+      <td><a href="${request.route_url('form_edit_page', page='Forms', form_id=form.id)}">${form.name}</a></td>
+      <td>${form.description}</td>
+    </tr>
+  % endfor
+</%block>
+
+<%block name="list_actions">
+  <a href="${request.route_url('form_add_page')}">Add New Form</a>
+</%block>

@@ -1,8 +1,15 @@
 <%inherit file="/base/index.html"/>
 <%block name="content">
-% if page =="anc":
-    <%include file="/forms/anc.html"/>
-% elif page == "eid":
-    <%include file="/forms/hei.html"/>
-%endif
+  <div class="container-fluid">
+    % if form_type.form_concepts:
+      % for concept in form_type.form_concepts:
+        <div class="row-fluid">
+          <div class="span8">
+            <label>${control_labels[concept.concept]}</label>
+            ${form.text(concept.concept, class_="span12")}
+          </div>
+        </div>
+      % endfor
+    % endif
+  </div>
 </%block>

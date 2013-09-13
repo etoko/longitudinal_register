@@ -39,28 +39,23 @@
 
     <div class="container-fluid">
        <!-- <form id="person_form" action="/person/save" method="post"> -->
-        ${form.begin(request.route_url('concept_add_view'), id='concept_form')}
+        ${form.begin(request.route_url('form_save'), id='concept_form')}
           ${form.csrf_token()}
         <div class="row-fluid">
             <div class="span6">
-                <label for="name">Name</label>
-                ${form.text('name', class_="span12")}
+                <h4>
+                ${form_model.name}
+                ${form.hidden('form',value=form_model.id)}
+                </h4>
             </div><!--/span4-->    
         </div><!--row-fluid-->
-        <div class="row-fluid">
-            <div class="span6">
-                <label>Description</label>
-                ${form.textarea('description', maxlength=255, class_="span12")}
-            </div><!--/span4-->    
-        </div>
-
 
   <!-- BEGIN DUAL SELECT WITH FILTER-->
   <div class="row-fluid">
       <div class="span12">
           <div class="box">
               <header>
-                  <h5><i class="icon-th-large"></i> Concept Answers</h5>
+                  <h5><i class="icon-th-large"></i> Concepts</h5>
 
                   <ul class="nav pull-right">
                       <li><a href="#">Link</a></li>
@@ -117,9 +112,7 @@
                               <input id="box2Filter" type="text" placeholder="Filter">
                               <button id="box2Clear" class="btn btn-warning" type="button">x</button>
                           </div>
-                          <select name="concept_answers" id="box2View" multiple="multiple" class="span12" size="10">-->
-                          </select><br/>
-
+                         ${form.select('concepts', form_concepts, id="box2View", multiple="multiple", class_="span12", size="10")}
                           <div class="alert alert-block">
                               <span id="box2Counter" class="countLabel"></span>
                               <select id="box2Storage"> </select>
