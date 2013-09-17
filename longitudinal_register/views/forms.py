@@ -55,9 +55,10 @@ def form_add_page(request):
 def form_edit_page(request, **kwargs):
     form_id = request.matchdict["form_id"]
     form = Form(request, schema=FormSchema())
-    form_model = models.DBSession.query(models.Form).get(form_id)
+    form_model = models.DBSession.query(models.Form).options(joinedload('form_concepts')).get(form_id)
     concepts = form_model.form_concepts
-    concepts = [(concept.id, concept.concept) for concept in concepts]
+    concepts = [models.DBSession.query(models.Concept).get(concept.concept) for concept in concepts]
+    concepts = [(concept.id, concept.name) for concept in concepts]
     return {"page": "Modify Form", "form": FormRenderer(form), \
     "concepts": get_concepts(), "form_concepts":concepts, "form_model": form_model}
 
