@@ -62,6 +62,7 @@ def person_add_view(request):
     else:
         print "Form Validation Failed"
         print form.all_errors()
+        print request.POST
         return {"message": "Reched ME!!"}
 
 @view_config(route_name="patient_dashboard_page", renderer="patients/dashboard.html")
@@ -73,12 +74,10 @@ def patient_dashboard(request):
     if person is None:
         person = models.DBSession.query(models.Person).get(health_id)
     location = models.DBSession.query(models.Location).get(person.location)
-    patient = models.DBSession.query(models.Patient)\
-        .filter(models.Patient.person == person.id).first()
     visits = []
-    if patient is not None:
+    if person is not None:
         visits = models.DBSession.query(models.Visit)\
-            .filter(models.Visit.patient == patient.id).all()
+            .filter(models.Visit.person == person.id).all()
     forms = models.DBSession.query(models.Form).all()
     print forms
     return {"page": "Patient Dashboard", "person": person, "forms": forms, "location":location\
@@ -162,9 +161,18 @@ class ANCSchema(formencode.Schema):
 def view_visit_page(request):
     visit_type = request.matchdict["form"]
     health_id = request.matchdict["health_id"]
-    person = models.DBSession.query(models.Person)\
-        .filter(models.Person.health_id == health_id).first()
-    form_type = models.DBSession.query(models.Form).options(joinedload('form_concepts')).get(visit_type)
+    person = None
+    form_type = None
+    health_units = None
+    with transaction.manager:
+        person = models.DBSession.query(models.Person)\
+            .filter(models.Person.health_id == health_id).first()
+        form_type = models.DBSession.query(models.Form).\
+            options(joinedload('form_concepts')).get(visit_type)
+        health_units = models.DBSession.query(models.HealthUnit).all()
+    health_units = \
+        [(health_unit.id, health_unit.name) for health_unit in health_units]
+
     visit_form = request.matchdict["form"] 
     form = Form(request, schema="ANCSchema")
     form_concepts = form_type.form_concepts
@@ -176,7 +184,9 @@ def view_visit_page(request):
 
     return {"page": form_type.name, "person": person, "form": FormRenderer(form), \
         "visit_type": visit_type, "form_type": form_type, \
-        "control_labels": control_labels}
+        "control_labels": control_labels,
+        "health_units": health_units,
+        "count":0}
     #if visit_form == "anc":
     #    return {"page": visit_form,"person": person}
     #elif visit_form == "eid":
