@@ -251,9 +251,6 @@ class Group(Base, BaseEntity):
                }
 
 
-
-
-
 class Person(Base):
     """
     Represents a person entity which directly represents a Patient
@@ -399,6 +396,7 @@ class Concept(Base):
     id = Column(Integer, Sequence("concept_id_seq"), primary_key = True)
     retired = Column(Boolean, nullable = False, default=False)
     name = Column(String(200))
+    datatype = Column(Integer, ForeignKey("concept_datatype.id"))
     description = Column(u"description", Text)
     created_by = Column(Integer, ForeignKey("users.id"))
     created_on = Column(DateTime, server_default = text("now()"))
@@ -421,20 +419,6 @@ class ConceptAnswer(Base):
     __table_args = (UniqueConstraint("concept", "answer_concept"),)
     
 
-class ConceptClass(Base):
-
-    __tablename__ = "concept_class" 
- 
-    id = Column(Integer, Sequence("concept_class_id_seq"), primary_key = True)
-    name = Column(String(255), nullable = False)
-    description = Column(Text)
-    created_by = Column(Integer, ForeignKey("users.id"))
-    created_on = Column(DateTime, server_default=text("now()"))
-    retired = Column(Boolean, default = False)
-    retired_by = Column(Integer, ForeignKey("users.id")) 
-    retired_on = Column(DateTime, server_default = text("now()"), nullable = True)
-    retire_reason = Column(Text, nullable = True)
-
 class ConceptDataType(Base):
     
     __tablename__ = "concept_datatype"
@@ -451,7 +435,7 @@ class Visit(Base):
 
     id = Column(Integer, Sequence("visit_id_seq"), primary_key = True)
     form = Column(Integer, ForeignKey("forms.id"))
-    patient = Column(Integer, ForeignKey("patients.id"), nullable = False)
+    person = Column(Integer, ForeignKey("persons.id"), nullable = False)
     provider = Column(Integer, ForeignKey("users.id"))
     health_unit = Column(Integer, ForeignKey("health_units.id"))
     visit_date = Column(DateTime)
