@@ -110,10 +110,10 @@
                                      <tbody>
                                        % for visit in visits:
                                          <tr>
-                                             <td>${visit[1]}</td>
-                                             <td>${visit}</td>
-                                             <td></td>
-                                             <td></td>
+                                             <td>${visit.visit_date}</td>
+                                             <td>${visit.health_unit}</td>
+                                             <td>${visit.provider}</td>
+                                             <td>${visit.form}</td>
                                              <td></td>
                                          <tr>
                                        % endfor
