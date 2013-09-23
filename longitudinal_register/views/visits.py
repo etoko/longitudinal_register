@@ -25,7 +25,7 @@ class VisitSchema(Schema):
     allow_extra_fields =  True
     form_id = validators.Int()
     #visit_type = validators.Int()
-    health_id = validators.Int()
+    health_id = validators.String()
     #provider = validators.Int()
     health_unit = validators.Int()
     visit_date = validators.DateValidator()
@@ -88,7 +88,8 @@ def visit_save_view(request):
         #    visit.observations = observations
         #    models.DBSession.merge(visit)
     else:
-        print form.all_errors()
+        #print form.all_errors()
+        print form.is_error(visit_date)
     print request.POST
     return HTTPFound(request.route_url("patients_list_page"))
    
