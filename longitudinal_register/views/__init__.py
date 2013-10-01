@@ -1,3 +1,5 @@
+import transaction
+
 from pyramid.httpexceptions import (
     HTTPFound,
     HTTPNotFound,
@@ -10,21 +12,31 @@ from pyramid.security import (
     remember,
     )
 
+
+from sqlalchemy.orm import contains_eager
+from sqlalchemy.orm import eagerload
+from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import subqueryload_all
 from sqlalchemy.exc import DBAPIError
 
-from longitudinal_register.models import (
-    DBSession,
-    MyModel,
-    )
+from longitudinal_register import models
 
 
 @view_config(permission="view", route_name='main', renderer='dashboard.html')
 def main_view(request):
+    list_of_visits = []
     try:
-        one = DBSession.query(MyModel).filter(MyModel.name == 'one').first()
+        with transaction.manager:
+            visits = models.DBSession.query(models.Visit).\
+                options(joinedload("*")).\
+                order_by(models.Visit.visit_date.desc()).slice(0, 10).all()
+            #for visit in visits:
+                #visit.health_unit = models.DBSession.query(models.HealthUnit).\
+                #    get(visit.health_unit)
+                #visit.health_unit = models.DBSession.query(models.HealthUnit).get(visit.health_unit).name
     except DBAPIError:
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
-    return {'one': one, 'page': 'Dashboard'}
+    return {'visits': visits, 'page': 'Dashboard'}
 
 
 @view_config(permission='view', route_name='login')
