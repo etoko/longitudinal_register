@@ -90,15 +90,6 @@ class BaseEntity(object):
     "extension": BaseExtension
     }
 
-class MyModel(Base):
-    __tablename__ = 'models'
-    id = Column(Integer, primary_key=True)
-    name = Column(Text, unique=True)
-    value = Column(Integer)
-
-    def __init__(self, name, value):
-        self.name = name
-        self.value = value
 
 user_groups = Table(u"user_groups", Base.metadata,
     Column(u"user_id", Integer, ForeignKey("users.id")),
@@ -318,8 +309,6 @@ class RelationshipType(Base):
     description = Column(u"description", String)
 
 
-
-
 class Permission(Base, BaseEntity):
     """
     Permissions - List of priviliges that are contained in the system
@@ -341,7 +330,6 @@ class Permission(Base, BaseEntity):
             "name":        self.name,
             "description": self.description,
         }
-
 
 class Location(Base):
 
@@ -436,8 +424,12 @@ class Visit(Base):
     id = Column(Integer, Sequence("visit_id_seq"), primary_key = True)
     form = Column(Integer, ForeignKey("forms.id"))
     person = Column(Integer, ForeignKey("persons.id"), nullable = False)
+    patient = relationship("Person", lazy="joined", \
+        primaryjoin="Visit.person == Person.id")
     provider = Column(Integer, ForeignKey("users.id"))
     health_unit = Column(Integer, ForeignKey("health_units.id"))
+    health_centre = relationship("HealthUnit", lazy="joined", \
+        primaryjoin="HealthUnit.id == Visit.health_unit")
     visit_date = Column(DateTime)
     created_by = Column(Integer, ForeignKey("users.id"))
     created_on = Column(DateTime, server_default = text("now()"))
@@ -446,7 +438,7 @@ class Visit(Base):
     voided = Column(Boolean, default = False)
     observations = relationship("Observation", order_by="Observation.id")
 
-#class VisitType(Base):
+#class VisitTypesBase):
 #
 #    __tablename__ = "visit_types"
 #
