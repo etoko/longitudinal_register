@@ -3,7 +3,8 @@
 % for patient in patients:
 <tr>
 
-  <td><a href="#helpModal" onclick="$('#person_b').val('${patient.id}');" rel="tooltip" data-placement="bottom" data-toggle="modal">${patient.health_id}</a></td>
+  <td><a href="#" onclick="$('#confirmationModal').modal({show:true});" rel="tooltip" data-placement="bottom" data-toggle="modal">${patient.health_id}</a></td>
+  <td><a href="#" onclick="display_dialog(${patient.id});" rel="tooltip" data-placement="bottom" data-toggle="modal">${patient.health_id}</a></td>
 
   <td>${patient.surname} ${patient.other_names}</td>
   <td>${patient.location}</td>
@@ -11,20 +12,29 @@
 % endfor
 </%block>
 <%block name="list_actions">
-  <a href="${request.route_path('patient_add_page')}"> Enter New Patient </a>
+  <a href="${request.route_path('patient_add_page')}"class="btn btn-primary btn-small"> Enter New Patient </a>
 </%block>
 
 <%block name="dialog_content">
-${form.begin(request.route_url('person_relations_save'))}
+${form.begin(request.route_url('person_relations_save', health_id=person_a.id))}
 ${form.csrf_token()} 
-${form.hidden('person_a', value=person_a)}
+${form.hidden('person_a', value=person_a.id)}
 ${form.hidden('person_b')}
-<label for="relationship_type">Relationship Type</label> 
+<label for="relationship_type">Relationship Type ${len(relationship_types)}</label> 
 ${form.select('type', relationship_types, class_="span4 chzn-select")}
 ${form.submit('submit', class_="btn")}
 ${form.end()}
+
 </%block>
 
 <%block name="dialog_footer">
   <button class="btn">Save</button>
+</%block>
+<%block name="page_javascripts">
+<script type="text/javascript">
+function display_dialog(health_id){
+ $('#person_b').val(health_id);
+ $("#confirmationModal").modal({show:true});
+}
+</script>
 </%block>
