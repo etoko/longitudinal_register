@@ -1,15 +1,45 @@
-<%inherit file="/base/index.html"/>
-<%block name="content">
+<%inherit file="/base/dashboard.html"/>
+
+<%block name="page_specific_header">
+</%block>
   <div class="container-fluid">
+<%block name="dashboard_meta">
+   <h3>${person.surname} ${person.other_names}</h3>
+   <h4>ID: ${person.health_id}</h4>
+</%block>
+<%block name="main_content">
+  ${form.begin(request.route_url('visit_save', health_id=person.health_id, form=5))}
+    ${form.csrf_token()}
+    ${form.hidden("health_id", value=person.health_id)}
+    ${form.hidden("form_id", value=request.matchdict["form"])}
+    <label for='visit_date'>Date</label>${form.text('visit_date')} 
+    <label>Health Centre</label> ${form.select("health_unit", health_units, class_="chzn-select")}
+    <hr>
     % if form_type.form_concepts:
-      % for concept in form_type.form_concepts:
+      % for index,concept in enumerate(form_type.form_concepts):
         <div class="row-fluid">
-          <div class="span8">
+          <div class="span6">
             <label>${control_labels[concept.concept]}</label>
             ${form.text(concept.concept, class_="span12")}
           </div>
         </div>
       % endfor
+      <div class="row-fluid">
+        <div class="span6">
+        ${form.submit('submit', 'Save', class_="btn")}
+        </div>
+      </div>
     % endif
+  ${form.end()}
   </div>
+</%block>
+<%block name="page_javascripts">
+ <script>
+   $( document ).ready(function() {
+   //$("#visit_date").datepicker();
+   $("#visit_date").datepicker({ maxDate: "-1D" }).attr('readonly', 'readonly');
+   $("#visit_date").datepicker({dateFormat: "dd-mm-yy"});
+   //$("#visit_date").readonlyDatepicker(true);
+});
+</script>
 </%block>
