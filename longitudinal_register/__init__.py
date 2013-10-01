@@ -73,6 +73,8 @@ def addroutes(config):
     config.add_route("locations_list", "/locations")
     config.add_route("location_add", "/location/add")
     config.add_route("location_add_view", "/location/new")
+    config.add_route("location_districts", "/locations/districts")
+    config.add_route("location_counties", "/locations/counties")
 
     #Health Units
     config.add_route("health_units_list", "/healthunits")
@@ -104,6 +106,7 @@ def addroutes(config):
     #forms
     config.add_route("form_list", "/forms")
     config.add_route("form_edit_page", "/forms/{form_id}/edit")
+    config.add_route("form_delete", "/forms/{form_id}/delete")
     config.add_route("form_add_page", "/forms/add")
     config.add_route("form_save", "/forms/save")
     config.add_route("form_dashboard", "/forms/{form_id}")
