@@ -18,8 +18,8 @@ import formencode
 from pyramid_simpleform import Form
 from pyramid_simpleform.renderers import FormRenderer
 
-from sqlalchemy.orm import joinedload
 from sqlalchemy import not_
+from sqlalchemy.orm import joinedload
 
 from webhelpers.paginate import (
   Page,
@@ -120,9 +120,9 @@ def person_relations_page(request):
     person_a = request.matchdict["person_a"]
     form = Form(request, schema=ANCSchema)
     persons = None
+    patients = None
     with transaction.manager:
-        persons = models.DBSession.query(models.Person).\
-            filter(not_(models.Person.id == person_a )).all()
+        patients = models.DBSession.query(models.Person).filter(not_(models.Person.id == person_a)).all()
         person_a = models.DBSession.query(models.Person).get(person_a)
     relationship_types = models.DBSession.query(models.RelationshipType).all()
     #items = patients_list_page(request)
@@ -133,8 +133,9 @@ def person_relations_page(request):
     #items['health_id'] = request.matchdict['person_a']
     #
     #return items
-    return {"page": "List of Relations", "items":persons, "headings": headings, "patients": persons, 
-        "form": FormRenderer(form), "person_a":person_a, "relationship_types": relationship_types}
+    return {"page": "List of Relations", "patients":patients, "relationship_types": relationship_types,\
+        "items": patients, "headings":headings, "form": FormRenderer(form),\
+        "person_a": person_a}
 
 
 @view_config(route_name="person_relations_save", renderer="json")
