@@ -6,10 +6,10 @@
   <td><a href="${request.route_path('patient_dashboard_page', health_id=patient.health_id)}">${patient.health_id}</a></td>
 
   <td>${patient.surname} ${patient.other_names}</td>
-  <td>${patient.location}</td>
+  <td>${patient.cell.name}</td>
 </tr>
 % endfor
 </%block>
 <%block name="list_actions">
-  <a href="${request.route_path('patient_add_page')}"> Enter New Patient </a>
+  <a href="${request.route_path('patient_add_page')}" class="btn btn-primary btn-small"> Create New Patient </a>
 </%block>
