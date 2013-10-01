@@ -70,8 +70,9 @@ def person_add_view(request):
 def patient_dashboard(request):
     health_id = request.matchdict["health_id"]
     person = models.DBSession.query(models.Person).\
-        options(joinedload(models.Person.relations))\
+        options(joinedload('*'))\
         .filter(models.Person.health_id == health_id).first()
+
     if person is None:
         person = models.DBSession.query(models.Person).get(health_id)
     location = models.DBSession.query(models.Location).get(person.location)
@@ -121,10 +122,19 @@ def person_relations_page(request):
     form = Form(request, schema=ANCSchema)
     persons = None
     patients = None
+    relations = []
+    back_relations = []
     with transaction.manager:
-        patients = models.DBSession.query(models.Person).filter(not_(models.Person.id == person_a)).all()
         person_a = models.DBSession.query(models.Person).get(person_a)
-    relationship_types = models.DBSession.query(models.RelationshipType).all()
+        if person_a:
+            if person_a.relations:
+                relations = person_a.relations
+            if person_a.back_relations:
+                back_relations = person_a.back_relations
+        patients = models.DBSession.query(models.Person).\
+            filter(not_((models.Person.id == person_a.id)).all()
+        print 'OOOOOOOOOOOOOOOOOOOOOOO', relations+back_relations
+        relationship_types = models.DBSession.query(models.RelationshipType).all()
     #items = patients_list_page(request)
     #items["form"] = FormRenderer(form)
     #items["relationship_types"] = \
@@ -133,6 +143,7 @@ def person_relations_page(request):
     #items['health_id'] = request.matchdict['person_a']
     #
     #return items
+    relationship_types = [ (r_type.id, r_type.name) for r_type in relationship_types]
     return {"page": "List of Relations", "patients":patients, "relationship_types": relationship_types,\
         "items": patients, "headings":headings, "form": FormRenderer(form),\
         "person_a": person_a}
