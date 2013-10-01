@@ -13,7 +13,6 @@ from ..models import (
     DBSession,
     Location,
     LocationType,
-    MyModel,
     Base,
     User,
     )
@@ -51,9 +50,7 @@ def main(argv=sys.argv):
     location.location_type = 10
 
     with transaction.manager:
-        model = MyModel(name='one', value=1)
         DBSession.add(user)
-        DBSession.add(model)
         DBSession.add_all(location_types)
 
 
