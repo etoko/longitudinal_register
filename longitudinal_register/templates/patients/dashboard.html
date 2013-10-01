@@ -1,8 +1,15 @@
 <%inherit file="/base/index.html"/>
 <%block name="page_specific_header">
+
+<script type="text/javascript">
+   $(document).ready(function() {
+     metisTable();
+            });
+   </script>
+
   <script type="text/javascript">
   $(document).ready(function() {
-      $('#visit_forms').dataTable();
+      $('#visits').dataTable();
   } );
   </script>
 </%block>
@@ -54,7 +61,7 @@
                             </div>
                           </header>
                           <div class="body">
-                            <table id="visit_forms" class="table table-bordered table-condensed table-hover table-striped">
+                            <table class="table table-bordered table-condensed table-hover table-striped" id="visit_forms">
                               <thead><tr><td>Form</td><td>Description</td></tr>
                               </thead>
                               <tbody><!--
@@ -65,10 +72,12 @@
                                 % endfor
                               </tbody>
                             </table>
+<!--
                             <ol>
-                               <li><a href="${request.route_path('visit_add', health_id=person.health_id, form='anc')}">ANC Visit</a></li>
-                               <li><a href="${request.route_path('visit_add', health_id=person.health_id, form='eid')}">EID</a></li>
+                               <li><a href="request.route_path('visit_add', health_id=person.health_id, form='anc')}">ANC Visit</a></li>
+                               <li><a href="request.route_path('visit_add', health_id=person.health_id, form='eid')}">EID</a></li>
                             </ol> 
+-->
                           </div>
                       </div>
                   </div>
@@ -86,18 +95,15 @@
                             </div>
                           </header>
                           <div class="body">
-
                            <div class="container-fluid">
                              <div class="row-fluid">
                                <div class="span12">
-                                 <div class="row-fluid">
-                                   <div class="span12">
                                      <div class="box">
                                  % if not len(visits):
                                      No visits yet.
                                  % else:
                                    <div id="collapse4" class="body">
-                                   <table width="101%" border="0" class="table table-bordered table-condensed table-hover table-striped" id="dataTable">
+                                   <table width="101%" border="0" class="table table-bordered table-condensed table-hover table-striped" id="visits">
                                      <thead>
                                          <tr>
                                              <th width="20%" scope="col">Date</th>
@@ -122,8 +128,6 @@
                                     </div><!--body-->
                                  % endif
                                    </div><!--box-->
-                                 <div><!--span12-->
-                                </div><!--row-fluid-->
                                </div><!--span12 inner-->
                              </div><!--row-fluid-->
                            </div><!--container-fluid-->
