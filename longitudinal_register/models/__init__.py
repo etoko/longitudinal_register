@@ -259,8 +259,14 @@ class Person(Base):
     dob_estimated = Column(Boolean, default=False)
     status = Column(u"status", String(20)) # Entry point on workbook
     location = Column(Integer, ForeignKey("locations.id"))
+    cell = relationship("Location", lazy="joined", \
+        primaryjoin="Person.location == Location.id")
     relations = relationship("Relationship", \
         primaryjoin="Relationship.person_a==Person.id", \
+        lazy="join"
+        )
+    back_relations = relationship("Relationship", \
+        primaryjoin="Relationship.person_b==Person.id", \
         lazy="join"
         )
     created_by = Column(u"created_by", ForeignKey("users.id"))
@@ -290,8 +296,14 @@ class Relationship(Base):
 
     id = Column(u"id", Integer, Sequence("relationship_id_seq"), primary_key=True)
     type = Column(u"type", ForeignKey("relationship_type.id"), nullable = False)
+    relationship_type = relationship("RelationshipType", lazy="joined",\
+        primaryjoin="Relationship.type == RelationshipType.id")
     person_a = Column(u"person_a", Integer, ForeignKey("persons.id"), nullable = False)
     person_b = Column(u"person_b", Integer, ForeignKey("persons.id"), nullable = False)
+    relative = relationship("Person", lazy="joined", \
+        primaryjoin="Relationship.person_b == Person.id")
+    back_relative = relationship("Person", lazy="joined", \
+        primaryjoin="Relationship.person_a == Person.id")
     created_by = Column(u"created_by", Integer, ForeignKey("users.id"), nullable = True)
     created_on = Column(u"created_on", DateTime, server_default = text("now()"))
     modified_by = Column(u"modified_by", Integer, ForeignKey("users.id"), \
