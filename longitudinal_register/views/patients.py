@@ -19,6 +19,7 @@ from pyramid_simpleform import Form
 from pyramid_simpleform.renderers import FormRenderer
 
 from sqlalchemy.orm import joinedload
+from sqlalchemy import not_
 
 from webhelpers.paginate import (
   Page,
@@ -94,7 +95,10 @@ def patients_add_page(request):
 
 @view_config(route_name="patients_list_page", renderer="patients/list.html")
 def patients_list_page(request):
-    patients = models.DBSession.query(models.Person).all()
+    patients = []
+    with transaction.manager:
+        patients = models.DBSession.query(models.Person).all()
+    
     return {"page": "Patients List", "patients": patients, "items": patients, \
         "headings": headings}
 
@@ -113,20 +117,30 @@ def person_relation_add_page(request):
 
 @view_config(route_name="person_relations_list", renderer="patients/relations/list.html")
 def person_relations_page(request):
+    person_a = request.matchdict["person_a"]
     form = Form(request, schema=ANCSchema)
+    persons = None
+    with transaction.manager:
+        persons = models.DBSession.query(models.Person).\
+            filter(not_(models.Person.id == person_a )).all()
+        person_a = models.DBSession.query(models.Person).get(person_a)
     relationship_types = models.DBSession.query(models.RelationshipType).all()
-    items = patients_list_page(request)
-    items["form"] = FormRenderer(form)
-    items["relationship_types"] = \
-        [(relationship_type.id, relationship_type.name) for relationship_type in relationship_types]
-    items['person_a'] = request.matchdict['person_a']
-    items['health_id'] = request.matchdict['person_a']
-    
-    return items
+    #items = patients_list_page(request)
+    #items["form"] = FormRenderer(form)
+    #items["relationship_types"] = \
+    #    [(relationship_type.id, relationship_type.name) for relationship_type in relationship_types]
+    #items['person_a'] = request.matchdict['person_a']
+    #items['health_id'] = request.matchdict['person_a']
+    #
+    #return items
+    return {"page": "List of Relations", "items":persons, "headings": headings, "patients": persons, 
+        "form": FormRenderer(form), "person_a":person_a, "relationship_types": relationship_types}
 
 
 @view_config(route_name="person_relations_save", renderer="json")
 def person_relation_save_view(request):
+    health_id = request.matchdict["health_id"]
+    
     print request.params.mixed()
     person_a = request.params['person_a']
     person_b = request.params['person_b']
