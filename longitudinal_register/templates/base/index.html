@@ -220,7 +220,7 @@
                             </div>
                             <hr>
                             <div class="row-fluid">
-                                <div class="span8">
+                                <div class="span6">
                                     <div class="box">
                                         <header>
                                             <h5>Calendar</h5>
@@ -230,7 +230,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="span4">
+                                <div class="span6">
                                     <div class="box">
                                         <header>
                                             <div class="icons"><i class="icon-tags"></i></div>
@@ -242,7 +242,7 @@
                                                  % for visit in visits:
                                                     <tr>
                                                         <td>${visit.visit_date}</td>
-                                                        <td>${visit.person}</td>
+                                                        <td>${visit.patient.surname}</td>
                                                     </tr>
                                                  % endfor
                                                 </tbody>
@@ -253,7 +253,7 @@
                             </div>
                             <hr>
                             <div class="row-fluid">
-                                <div class="span8">
+                                <div class="span6">
                                     <div class="box">
                                         <header>
                                             <h5>Line Chart</h5>
@@ -261,7 +261,7 @@
                                         <div class="body" id="trigo" style="height: 250px;"></div>
                                     </div>
                                 </div>
-                                <div class="span4">
+                                <div class="span6">
                                     <div class="box">
                                         <div class="body">
                                             <table class="table table-bordered table-condensed table-hovered sortableTable">
@@ -278,8 +278,8 @@
                                                 <tbody>
                                                  % for visit in visits:
                                                     <tr>
-                                                        <td>${visit.health_unit}</td>
-                                                        <td>${visit.person}</td>
+                                                        <td>${visit.health_centre.name}</td>
+                                                        <td>${visit.patient.surname}, ${visit.patient.other_names} </td>
                                                         <td>${visit.visit_date}</td>
                                                     </tr>
                                                  % endfor
