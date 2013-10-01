@@ -64,7 +64,7 @@ def form_edit_page(request, **kwargs):
 
 @view_config(route_name="form_save", renderer="json")
 def form_save(request):
-    form_id = request.params["form"]
+    form_id = request.params["form", None]
     if form_id:
         form = Form(request, schema=FormConceptSchema())
         if form.validate():
@@ -90,6 +90,9 @@ def form_save(request):
             print request.params
             return
 
+    else:
+        print "We are dealing with a new form"
+
     form = Form(request, schema=FormSchema)
     if form.validate():
         form_model  = form.bind(models.Form())
@@ -111,6 +114,15 @@ def form_list(request):
     forms = get_forms() 
     forms = [(form.id, form.name) for form in forms]
     return {"aaData": forms}
+
+
+@view_config(route_name="form_delete", renderer="forms/list.html")
+def form_delete_view(request):
+    form_id = request.matchdict["form_id"]
+    with transaction.manager:
+        form = models.DBSession.query(models.Form).get(form_id)
+        models.DBSession.delete(form)
+    return {"page": "List of forms", "items":get_forms(), "headings":headings}
 
 def get_forms():
     return models.DBSession.query(models.Form).all()
