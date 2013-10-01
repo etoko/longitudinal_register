@@ -42,7 +42,12 @@
                             <h4>Relations</h4>
                             % if person.relations:
                                % for relation in person.relations:
-                              <p>${relation.person_b}</p>
+                              <p>${relation.relative.surname}, ${relation.relative.other_names} [${relation.relationship_type.name}]</p>
+                               % endfor
+                            % endif
+                            % if person.back_relations:
+                               % for relation in person.back_relations:
+                              <p>${relation.back_relative.surname}, ${relation.back_relative.other_names} [${relation.relationship_type.name} of]</p>
                                % endfor
                             % endif
                              <a href="${request.route_path('person_relations_list', person_a=person.id)}">Create Relationship</a>
