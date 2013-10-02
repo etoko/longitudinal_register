@@ -18,7 +18,7 @@ import formencode
 from pyramid_simpleform import Form
 from pyramid_simpleform.renderers import FormRenderer
 
-from sqlalchemy import not_
+from sqlalchemy import not_, or_
 from sqlalchemy.orm import joinedload
 
 from webhelpers.paginate import (
@@ -130,10 +130,13 @@ def person_relations_page(request):
             if person_a.relations:
                 relations = person_a.relations
             if person_a.back_relations:
-                back_relations = person_a.back_relations
+                relations = relations+person_a.back_relations
+        excluded_people = [relation.relative.id for relation in relations]
+        excluded_people.append(person_a.id)
+        print 'OOOOOOOOOOOOOOOOOOOOOOO', excluded_people
+        clauses = or_( * [models.Person.id == x for x in excluded_people] )
         patients = models.DBSession.query(models.Person).\
-            filter(not_((models.Person.id == person_a.id)).all()
-        print 'OOOOOOOOOOOOOOOOOOOOOOO', relations+back_relations
+            filter(not_((clauses))).all()
         relationship_types = models.DBSession.query(models.RelationshipType).all()
     #items = patients_list_page(request)
     #items["form"] = FormRenderer(form)
