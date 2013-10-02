@@ -124,6 +124,7 @@ def person_relations_page(request):
     patients = None
     relations = []
     back_relations = []
+    excluded_people = []
     with transaction.manager:
         person_a = models.DBSession.query(models.Person).get(person_a)
         if person_a:
@@ -131,7 +132,12 @@ def person_relations_page(request):
                 relations = person_a.relations
             if person_a.back_relations:
                 relations = relations+person_a.back_relations
-        excluded_people = [relation.relative.id for relation in relations]
+        for relation in relations:
+            if relation.relative:
+                excluded_people.append(relation.relative.id)
+            if relation.back_relative:
+                excluded_people.append(relation.back_relative.id)
+        #excluded_people = [relation.relative.id for relation in relations]
         excluded_people.append(person_a.id)
         print 'OOOOOOOOOOOOOOOOOOOOOOO', excluded_people
         clauses = or_( * [models.Person.id == x for x in excluded_people] )
